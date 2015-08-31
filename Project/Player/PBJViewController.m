@@ -26,7 +26,8 @@
 #import "PBJViewController.h"
 #import "PBJVideoPlayerController.h"
 
-static NSString * const PBJViewControllerVideoPath = @"http://distilleryvesper7-3.ak.instagram.com/fdc51d8ea73611e3a15612e740d32ce3_101.mp4";
+static NSString * const PBJRemoteVideoURLString = @"http://devimages.apple.com/iphone/samples/bipbop/bipbopall.m3u8";
+static NSString * const PBJViewControllerVideoPath = @"https://scontent.cdninstagram.com/hphotos-xfa1/t50.2886-16/11719145_918467924880620_816495633_n.mp4";
 
 @interface PBJViewController () <
     PBJVideoPlayerControllerDelegate>
@@ -67,7 +68,9 @@ static NSString * const PBJViewControllerVideoPath = @"http://distilleryvesper7-
     [self.view addSubview:_playButton];
     [self.view bringSubviewToFront:_playButton];
     
-    _videoPlayerController.videoPath = PBJViewControllerVideoPath;
+    //_videoPlayerController.videoPath = PBJViewControllerVideoPath;
+    NSURL *bipbopUrl = [[NSURL alloc] initWithString:PBJRemoteVideoURLString];
+    _videoPlayerController.asset = [[AVURLAsset alloc] initWithURL:bipbopUrl options:nil];
 }
 
 #pragma mark - PBJVideoPlayerControllerDelegate

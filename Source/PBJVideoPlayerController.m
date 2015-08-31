@@ -77,6 +77,8 @@ static NSString * const PBJVideoPlayerControllerReadyForDisplay = @"readyForDisp
         unsigned int playbackLoops:1;
         unsigned int playbackFreezesAtEnd:1;
     } __block _flags;
+    
+    float _volume;
 }
 
 @end
@@ -116,7 +118,15 @@ static NSString * const PBJVideoPlayerControllerReadyForDisplay = @"readyForDisp
     _videoPath = [videoPath copy];
 
     AVURLAsset *asset = [AVURLAsset URLAssetWithURL:videoURL options:nil];
+    [self setAsset:asset];
+}
+
+- (void)setAsset:(AVAsset *)asset {
     [self _setAsset:asset];
+}
+
+- (AVAsset *)asset {
+    return _asset;
 }
 
 - (BOOL)playbackLoops
@@ -157,10 +167,25 @@ static NSString * const PBJVideoPlayerControllerReadyForDisplay = @"readyForDisp
     return maxDuration;
 }
 
+- (float)volume {
+    return _player.volume;
+}
+
+- (void)setVolume:(float)volume {
+    _volume = volume;
+    
+    if (!_player) {
+        return;
+    }
+    
+    _player.volume = volume;
+}
+
 - (void)_setAsset:(AVAsset *)asset
 {
-    if (_asset == asset)
+    if (_asset == asset) {
         return;
+    }
     
     if (_playbackState == PBJVideoPlayerPlaybackStatePlaying) {
         [self pause];
@@ -379,7 +404,7 @@ typedef void (^PBJVideoPlayerBlock)();
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    if (_videoPath) {
+    if (_videoPath || _asset) {
         
         switch (_playbackState) {
             case PBJVideoPlayerPlaybackStateStopped:
